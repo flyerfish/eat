@@ -8,7 +8,8 @@ import java.util.List;
  * ini4j class
  *
  * @author sylar
- *
+ * @verion 0.0.1
+ * @date   2017-12-07
  */
 public class Ini4j {
 
@@ -415,6 +416,11 @@ public class Ini4j {
 	    return kv;
     }
 
+    /**
+     * test
+     *
+     * @param args
+     */
 	public static void main(String[] args) {
         Ini4j ini = new Ini4j();
         ini.open("config.ini");

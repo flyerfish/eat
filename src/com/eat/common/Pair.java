@@ -3,23 +3,35 @@ package com.eat.common;
 import java.util.Objects;
 
 /**
- * An immutable pair of values.  The values may be null.  The values
- * themselves may be mutable.
+ * An immutable pair of values.  The values may be null.  The values themselves may be mutable.
  *
  * @param <A> the type of the first element of the pair
  * @param <B> the type of the second element of the pair
  *
- * @since 1.7
+ * @author  sylar
+ * @version 0.0.1
+ * @date    2017-12-07
  */
+
 public final class Pair<A, B> {
     public final A first;
     public final B second;
 
+    /**
+     *
+     *
+     */
     public Pair() {
         first = null;
         second = null;
     }
 
+    /**
+     *
+     *
+     * @param a
+     * @param b
+     */
     public Pair(A a, B b) {
         this.first = a;
         this.second = b;
@@ -27,8 +39,11 @@ public final class Pair<A, B> {
 
     /**
      * Returns a pair whose elements are the first and second
-     * arguments, respectively.
      *
+     * @param c
+     * @param d
+     * @param <C>
+     * @param <D>
      * @return a pair constructed from the arguments
      */
     public static <C, D> Pair<C, D> valueOf(C c, D d) {
@@ -37,15 +52,21 @@ public final class Pair<A, B> {
     }
 
     /**
-     * TBD
+     * to string
+     *
+     * @return
      */
     @Override
     public String toString() {
         return "[" + Objects.toString(first) + ", " + Objects.toString(second) + "]";
     }
 
+
     /**
-     * TBD
+     *
+     *
+     * @param x
+     * @return
      */
     @Override
     public boolean equals(Object x) {
@@ -57,8 +78,11 @@ public final class Pair<A, B> {
         }
     }
 
+
     /**
-     * TBD
+     *
+     *
+     * @return
      */
     @Override
     public int hashCode() {
@@ -66,7 +90,6 @@ public final class Pair<A, B> {
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
 
     }
 }
