@@ -12,31 +12,31 @@ import java.util.List;
  */
 public class Ini4j {
 
-    private final int SECTION_TYPE = 0;
-    private final int KEYVALUE_TYPE = 1;
-    private final int COMMENT_TYPE = 2;
+    private final int SECTION_TYPE  = 0;    //section line
+    private final int KEYVALUE_TYPE = 1;    //key value line
+    private final int COMMENT_TYPE  = 2;    //comment line
 
-    class IniBase {
+    class BaseLine {
         protected String line;
         protected int type;
 
-        IniBase(int type){
+        BaseLine(int type){
             this.type = type;
         }
     }
 
-    class Section extends IniBase {
+    class Section extends BaseLine {
 
         Section(){
             super(SECTION_TYPE);
         }
         protected String name;
         protected String comment;
-        protected List<IniBase> content = new ArrayList<IniBase>();
+        protected List<BaseLine> content = new ArrayList<BaseLine>();
 
     }
 
-    class KeyVal extends IniBase {
+    class KeyVal extends BaseLine {
         KeyVal(){
             super(KEYVALUE_TYPE);
         }
@@ -45,7 +45,7 @@ public class Ini4j {
         protected String comment;
     }
 
-    class Comment extends IniBase {
+    class Comment extends BaseLine {
         Comment(String line){
             super(COMMENT_TYPE);
             this.comment = line;
@@ -54,11 +54,11 @@ public class Ini4j {
     }
 
 	private String fileName;
-    private List<IniBase> content = new ArrayList<IniBase>();
+    private List<BaseLine> content = new ArrayList<BaseLine>();
     private boolean needSave = false;
 
     /**
-     *
+     *  constructed function
      *
      */
 	public Ini4j(){
@@ -85,11 +85,9 @@ public class Ini4j {
             reader = new BufferedReader(new FileReader(file));  
 
             String line = null;
-            //一次读入一行，直到读入null为文件结束
-
             Section section = null;
             while ( ( line = reader.readLine() ) != null ) {
-                IniBase base = this.parse(line);
+                BaseLine base = this.parse(line);
                 if( base.type == SECTION_TYPE ){
                     content.add(base);
                     section = (Section)base;
@@ -113,7 +111,7 @@ public class Ini4j {
 	}
 
     /**
-     * read value of [section, key]
+     * read string from [section, key]
      *
      * @param section
      * @param key
@@ -125,7 +123,7 @@ public class Ini4j {
             return value;
         }
 
-        for( IniBase base : content ){
+        for( BaseLine base : content ){
             if( base.type != SECTION_TYPE ){
                 continue;
             }
@@ -133,7 +131,7 @@ public class Ini4j {
             if( !sec.name.equals(section) ){
                 continue;
             }
-            for (IniBase sub : sec.content ) {
+            for (BaseLine sub : sec.content ) {
                 if( sub.type != KEYVALUE_TYPE){
                     continue;
                 }
@@ -148,6 +146,22 @@ public class Ini4j {
     }
 
     /**
+     * read int from [section, key]
+     *
+     * @param section
+     * @param key
+     * @param value
+     * @return
+     */
+    public int readInt(String section, String key, int value){
+        String ret = readString(section, key, "");
+        if(util.isNull(ret)) {
+            return value;
+        }
+        return Integer.valueOf(ret);
+    }
+
+    /**
      * read value of [section, key]
      *
      * @param section
@@ -159,7 +173,7 @@ public class Ini4j {
     }
 
     /**
-     * save ini to file
+     * save if u has modify ini
      *
      * @param fileName new file name
      * @return true/false
@@ -175,12 +189,12 @@ public class Ini4j {
         try {
             fw = new FileWriter(file);
             writer = new BufferedWriter(fw);
-            for( IniBase base : this.content ){
+            for( BaseLine base : this.content ){
                 writer.write(base.line);
                 writer.newLine();
                 if( base.type == SECTION_TYPE ){
                     Section sec = (Section)base;
-                      for(IniBase kv : sec.content ){
+                      for(BaseLine kv : sec.content ){
                         writer.write(kv.line);
                         writer.newLine();
                     }
@@ -201,7 +215,7 @@ public class Ini4j {
     }
 
     /**
-     * save ini to file
+     * override current ini file
      *
      * @return true/false
      */
@@ -222,7 +236,7 @@ public class Ini4j {
             return false;
         }
 
-        for( IniBase base : content ){
+        for( BaseLine base : content ){
             if( base.type != SECTION_TYPE ){
                 continue;
             }
@@ -231,7 +245,7 @@ public class Ini4j {
                 continue;
             }
 
-            for (IniBase sub : sec.content ) {
+            for (BaseLine sub : sec.content ) {
                 if( sub.type != KEYVALUE_TYPE){
                     continue;
                 }
@@ -269,6 +283,18 @@ public class Ini4j {
     }
 
     /**
+     * write a int of [section, key, value]
+     *
+     * @param section
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean writeInt(String section, String key, int value ){
+        return writeString(section, key, String.valueOf(value) );
+    }
+
+    /**
      * remove key
      *
      * @param section
@@ -280,7 +306,7 @@ public class Ini4j {
             return false;
         }
 
-        for( IniBase base : content ){
+        for( BaseLine base : content ){
             if( base.type != SECTION_TYPE ){
                 continue;
             }
@@ -289,7 +315,7 @@ public class Ini4j {
                 continue;
             }
 
-            for (IniBase sub : sec.content ) {
+            for (BaseLine sub : sec.content ) {
                 if( sub.type != KEYVALUE_TYPE){
                     continue;
                 }
@@ -322,7 +348,7 @@ public class Ini4j {
             return false;
         }
 
-        for( IniBase base : content ){
+        for( BaseLine base : content ){
             if( base.type != SECTION_TYPE ){
                 continue;
             }
@@ -343,9 +369,9 @@ public class Ini4j {
      * parse line
      *
      * @param line
-     * @return IniBase(Section or KeyVal or Comment)
+     * @return BaseLine(Section or KeyVal or Comment)
      */
-	private IniBase parse(String line){
+	private BaseLine parse(String line){
         //find comment
         if( util.isNull(line) || line.startsWith("#") ){
             Comment base = new Comment(line);
