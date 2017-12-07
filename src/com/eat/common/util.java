@@ -18,10 +18,7 @@ public class util {
 	 * @return
 	 */
 	public static boolean isNull(Object obj){
-		if( obj != null){
-			return false;
-		}
-		return true;
+		return obj == null;
 	}
 
 	/**
