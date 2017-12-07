@@ -1,7 +1,7 @@
 package com.eat.common;
 
-import java.io.Closeable;
-import java.io.IOException;
+import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -73,8 +73,58 @@ public class util {
 		
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	/**
+	 * execute local command/shell
+	 *
+	 * @param cmd		command string
+	 * @param timeout   wait result for timeout time. time unit is second
+	 * @return result of command
+	 */
+	public static String exec(String cmd, long timeout)throws Exception{
+		Runtime rt = Runtime.getRuntime();
+		Process pr = null;
+		InputStream isr = null;
+		BufferedReader in = null;
+
+		StringBuffer ret = new StringBuffer();
+		try{
+			pr = rt.exec(cmd);
+
+			isr = pr.getInputStream();
+			in = new BufferedReader( new InputStreamReader(isr));
+
+			String line = null;
+			timeout = timeout * 1000;
+			while( timeout > 0 ){
+				if( pr.waitFor(100L, TimeUnit.MILLISECONDS) ){
+					while( (line = in.readLine()) != null ){
+						ret.append(line + "\n");
+					}
+					break;
+				}else{
+					if( in.ready() ){
+						line = in.readLine();
+						ret.append(line + "\n");
+					}
+					timeout = timeout - 100;
+				}
+			}
+			if( timeout <= 0 ){
+				pr.destroy();
+				throw new Exception("execute [" + cmd +"] timeout, output=\n" + ret.toString() );
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			pr.destroy();
+			return "";
+		}finally {
+			util.close(in);
+			util.close(isr);
+		}
+		return ret.toString();
+	}
+
+	public static void main(String[] args) throws Exception {
 
 	}
 
