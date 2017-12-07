@@ -77,7 +77,8 @@ public class util {
 	 * execute local command/shell
 	 *
 	 * @param cmd		command string
-	 * @param timeout   wait result for timeout time. time unit is second
+	 * @param timeout   wait result for timeout time, not block forever.
+	 *                  time unit is second
 	 * @return result of command
 	 */
 	public static String exec(String cmd, long timeout)throws Exception{
@@ -86,6 +87,7 @@ public class util {
 		InputStream isr = null;
 		BufferedReader in = null;
 
+		//StringBuffer is thread safe class
 		StringBuffer ret = new StringBuffer();
 		try{
 			pr = rt.exec(cmd);
