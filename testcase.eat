@@ -1,0 +1,46 @@
+# Delete project(Specification name)
+
+
+* Sign up for user "mike"
+* Log in as "mike"
+
+Delete single project
+-----------------------Teardown step
+
+* Delete the "example" project
+* Ensure "example" project has been deleted
+
+Delete multiple projects
+------------------------Teardown step
+* Delete all the projects in the list
+* Ensure project list is empty
+
+____________________
+These are teardown steps
+
+* Logout user "mike"
+* Delete user "mike"
+
+
+# test feature name
+
+
+* Sign up for user "mike"
+* Log in as "mike"
+
+Delete single project
+-----------------------Teardown step
+
+* Delete the "example" project
+* Ensure "example" project has been deleted
+
+Delete multiple projects
+------------------------Teardown step
+* Delete all the projects in the list
+* Ensure project list is empty
+
+____________________
+These are teardown steps
+
+* Logout user "mike"
+* Delete user "mike"

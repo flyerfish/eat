@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  * @version 0.0.1
  * @date    2017-12-07
  */
-public class LocalCmd {
+public class Command {
     private Process proc = null;
     private BufferedReader input  = null;
     private BufferedWriter output = null;
@@ -61,7 +61,7 @@ public class LocalCmd {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        LocalCmd cmd = new LocalCmd();
+        Command cmd = new Command();
 
         String ret = cmd.execute("ping 127.0.0.1", 10L);
         System.out.println(ret);
