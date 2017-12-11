@@ -74,11 +74,12 @@ public class util {
 	 * execute local command/shell
 	 *
 	 * @param cmd		command string
+	 * @param workPath  cmd with work path
 	 * @param timeout   wait result for timeout time, not block forever.
 	 *                  time unit is second
 	 * @return result of command
 	 */
-	public static String exec(String cmd, long timeout)throws Exception{
+	public static String exec(String cmd, String workPath, long timeout)throws Exception{
 		Runtime rt = Runtime.getRuntime();
 		Process pr = null;
 		InputStream isr = null;
@@ -87,8 +88,16 @@ public class util {
 		//StringBuffer is thread safe class
 		StringBuffer ret = new StringBuffer();
 		try{
-			pr = rt.exec(cmd);
+			File fworkPath = null;
+			if( notNull(workPath) )
+			{
+				fworkPath = new File(workPath);
+				if( false == fworkPath.isDirectory() ){
+					throw new Exception( workPath + " is not directory");
+				}
+			}
 
+			pr = rt.exec(cmd, null, fworkPath);
 			isr = pr.getInputStream();
 			in = new BufferedReader( new InputStreamReader(isr));
 
@@ -123,8 +132,59 @@ public class util {
 		return ret.toString();
 	}
 
-	public static void main(String[] args) throws Exception {
+	/**
+	 * execute local command/shell
+	 *
+	 * @param cmd
+	 * @param timeout
+	 * @return
+	 * @throws Exception
+	 */
+	public static String exec(String cmd, long timeout)throws Exception{
+		return exec(cmd, null, timeout);
+	}
 
+	/**
+	 *
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static boolean equals(byte[] left, byte[]right){
+		if( isNull(left) && isNull(right) ){
+			return true;
+		}
+		if( isNull(left) || isNull(right) ){
+			return false;
+		}
+		if( left.length != right.length ){
+			return false;
+		}
+
+		for( int i = 0; i < left.length; ++i ){
+			if( left[i] != right[i] ){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 *
+	 * @param left
+	 * @param right
+	 * @return
+	 */
+	public static byte[] merge(byte[]left, byte[]right){
+		byte[] ret = new byte[left.length + right.length];
+		System.arraycopy(left, 0, ret, 0, left.length );
+		System.arraycopy(right, 0, ret, left.length, right.length );
+		return ret;
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(util.exec("sleep 5", null, 2));
 	}
 
 }
